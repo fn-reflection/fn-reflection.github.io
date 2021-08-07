@@ -1,5 +1,8 @@
-// import prism from 'remark-prism';
+import fs from 'fs'
+import { join } from 'path';
 import {unified} from 'unified';
+import {getHighlighter} from 'shiki';
+
 import toMdAst from 'remark-parse';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
@@ -9,12 +12,18 @@ import rehypeKatex from 'rehype-katex';
 import rehypeRaw from 'rehype-raw';
 import toHtml from 'rehype-stringify';
 
+
+const solarizedDark = JSON.parse(
+  fs.readFileSync(join(process.cwd(), "design_schemes/colors/solarized_dark.json"), "utf-8"),
+)
+
 const mdToHtml: (markdown: string) => Promise<string> = async markdown => {
-  const processor =  unified()
+  const shikiColorTheme = await getHighlighter({theme: 'solarized-dark'});
+  const processor = unified()
     .use(toMdAst)
     .use(remarkMath) // allow katex
     .use(remarkGfm)  // allow table syntax
-    .use(remarkShiki) // syntax highlighter
+    .use(remarkShiki, {theme: solarizedDark}) // syntax highlighter
     .use(toHtmlAst, { allowDangerousHtml: true }) // markdown input is regarded as SAFE
     .use(rehypeKatex) // allow katex
     .use(rehypeRaw)
