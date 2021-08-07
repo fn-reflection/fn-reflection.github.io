@@ -1,3 +1,4 @@
+import 'sanitize.css';
 import 'katex/dist/katex.min.css';
 import { AppProps } from 'next/app';
 
