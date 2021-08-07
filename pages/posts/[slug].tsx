@@ -12,33 +12,26 @@ export default function Post({ post }: { post: PostData;}): JSX.Element {
   }
   return (
     <article>
-      {post.title}
+      <h1>{post.title}</h1>
       <div dangerouslySetInnerHTML={{ __html: post.content }}/>
     </article>
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async context => {
   const slug = context.params?.slug;
-  if (typeof slug !== 'string') {
-    return { props: {} };
-  }
+  if (typeof slug == null) { return { props: {} }; }
   const post = getPostBySlug(slug);
   const content = await mdToHtml(post.content || '');
-
   return {
     props: {
-      post: {
-        ...post,
-        content,
-      },
+      post: { ...post, content},
     },
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = getAllPosts();
-
   return {
     paths: posts.map((post) => {
       return {

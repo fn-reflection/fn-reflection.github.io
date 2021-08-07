@@ -1,24 +1,26 @@
 // import prism from 'remark-prism';
 import {unified} from 'unified';
-import remarkParse from 'remark-parse';
+import toMdAst from 'remark-parse';
+import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
 import remarkShiki from '@stefanprobst/remark-shiki';
-import remarkRehype from 'remark-rehype';
+import toHtmlAst from 'remark-rehype';
+import rehypeKatex from 'rehype-katex';
 import rehypeRaw from 'rehype-raw';
-import rehypeStringify from 'rehype-stringify';
+import toHtml from 'rehype-stringify';
 
-async function mdToHtml(
-  markdown: string
-): Promise<string> {
+const mdToHtml: (markdown: string) => Promise<string> = async markdown => {
   const processor =  unified()
-    .use(remarkParse)
-    .use(remarkGfm) 
-    .use(remarkShiki)
-    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(toMdAst)
+    .use(remarkMath) // allow katex
+    .use(remarkGfm)  // allow table syntax
+    .use(remarkShiki) // syntax highlighter
+    .use(toHtmlAst, { allowDangerousHtml: true }) // markdown input is regarded as SAFE
+    .use(rehypeKatex) // allow katex
     .use(rehypeRaw)
-    .use(rehypeStringify);
+    .use(toHtml);
   const vfile = await processor.process(markdown);
   return vfile.toString();
-}
+};
 
 export {mdToHtml};
