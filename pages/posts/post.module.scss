@@ -1,0 +1,49 @@
+.post {
+  display: flex;
+  justify-content: center;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+.article {
+  width: 100%;
+  max-width: 720px;
+
+  h1 {
+  }
+
+  h2 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    color: #555;
+  }
+
+  pre {
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  th {
+    padding: 0.5rem;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 0.5rem;
+  }
+
+  td {
+    padding: 0.5rem;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 0.5rem;
+  }
+}

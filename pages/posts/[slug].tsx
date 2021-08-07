@@ -1,9 +1,10 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
+import PostData from 'interfaces/post';
 import { getPostBySlug, getAllPosts } from 'core/api';
 import {mdToHtml} from 'core/mdToHtml';
-import PostData from 'interfaces/post';
+import styles from './post.module.scss'; 
 
 export default function Post({ post }: { post: PostData;}): JSX.Element {
   const router = useRouter();
@@ -11,10 +12,12 @@ export default function Post({ post }: { post: PostData;}): JSX.Element {
     return <ErrorPage statusCode={404} />;
   }
   return (
-    <article>
+    <div className={styles['post']}>
+    <article className={styles['article']}>
       <h1>{post.title}</h1>
       <div dangerouslySetInnerHTML={{ __html: post.content }}/>
     </article>
+    </div>
   );
 }
 
