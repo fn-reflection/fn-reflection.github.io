@@ -6,7 +6,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "lint:css": "stylelint **/*.{css,scss,sass}"
+    "lint:css": "stylelint **/*.{css,scss,sass}",
+    "export": "next export"
   },
   "dependencies": {
     "@stefanprobst/remark-shiki": "^0.1.2",
@@ -40,6 +41,7 @@
     "@typescript-eslint/parser": "^4.29.0",
     "autoprefixer": "^10.3.1",
     "eslint": "^7.32.0",
+    "eslint-config-next": "^11.0.1",
     "eslint-plugin-react": "^7.24.0",
     "next-transpile-modules": "^8.0.0",
     "sass": "^1.37.5",

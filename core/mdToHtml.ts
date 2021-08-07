@@ -1,7 +1,7 @@
-import fs from 'fs'
+import fs from 'fs';
 import { join } from 'path';
 import {unified} from 'unified';
-import {getHighlighter} from 'shiki';
+import {IThemeRegistration} from 'shiki';
 
 import toMdAst from 'remark-parse';
 import remarkMath from 'remark-math';
@@ -13,18 +13,19 @@ import rehypeRaw from 'rehype-raw';
 import toHtml from 'rehype-stringify';
 
 
-const solarizedDark = JSON.parse(
-  fs.readFileSync(join(process.cwd(), "design_schemes/colors/solarized_dark.json"), "utf-8"),
-)
+const solarizedDark:IThemeRegistration = JSON.parse(
+  fs.readFileSync(join(process.cwd(), 'design_schemes/colors/solarized_dark.json'), 'utf-8'),
+);
 
 const mdToHtml: (markdown: string) => Promise<string> = async markdown => {
-  const shikiColorTheme = await getHighlighter({theme: 'solarized-dark'});
   const processor = unified()
     .use(toMdAst)
     .use(remarkMath) // allow katex
     .use(remarkGfm)  // allow table syntax
+    //@ts-ignore
     .use(remarkShiki, {theme: solarizedDark}) // syntax highlighter
     .use(toHtmlAst, { allowDangerousHtml: true }) // markdown input is regarded as SAFE
+    //@ts-ignore
     .use(rehypeKatex) // allow katex
     .use(rehypeRaw)
     .use(toHtml);

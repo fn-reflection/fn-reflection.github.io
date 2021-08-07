@@ -13,17 +13,17 @@ export default function Post({ post }: { post: PostData;}): JSX.Element {
   }
   return (
     <div className={styles['post']}>
-    <article className={styles['article']}>
-      <h1>{post.title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: post.content }}/>
-    </article>
+      <article className={styles['article']}>
+        <h1>{post.title}</h1>
+        <div dangerouslySetInnerHTML={{ __html: post.content }}/>
+      </article>
     </div>
   );
 }
 
 export const getStaticProps: GetStaticProps = async context => {
   const slug = context.params?.slug;
-  if (typeof slug == null) { return { props: {} }; }
+  if ( slug == null || Array.isArray(slug)) { return { props: {} }; }
   const post = getPostBySlug(slug);
   const content = await mdToHtml(post.content || '');
   return {
