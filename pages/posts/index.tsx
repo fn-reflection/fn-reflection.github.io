@@ -5,19 +5,23 @@ export default function Index(): JSX.Element {
   return (
     <>
       <Head>
-        <title>fn-reflection</title>
+        <title>fn-reflection's posts</title>
       </Head>
       <section> 
         <div>
-          <Link href="/posts">
-            <a>fn-reflection's posts</a>
+          <Link href="/">
+            <a>..</a>
           </Link>
+          <p>上へ</p>
         </div>
         <div>
-          <Link href="/sandboxes">
-            <a>fn-reflection's sandboxes</a>
+          <Link href="/posts/yarn">
+            <a>yarn</a>
           </Link>
+          <p>yarnを扱う上での便利コマンド</p>
         </div>
+      </section>
+      <section> 
       </section>
     </>
   );
