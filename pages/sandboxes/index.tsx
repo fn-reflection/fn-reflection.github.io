@@ -5,7 +5,7 @@ export default function Index(): JSX.Element {
   return (
     <>
       <Head>
-        <title>fn-reflection's sandboxes</title>
+        <title>fn-reflection&apos;s sandboxes</title>
       </Head>
       <section> 
         <div>
@@ -22,7 +22,7 @@ export default function Index(): JSX.Element {
         </div>
         <div>
           <Link href="/sandboxes/scroll_bars">
-            <a>Scroll Bars</a>``
+            <a>Scroll Bars</a>
           </Link>
           <p>何かとややこしいスクロールバーのテスト</p>
         </div>

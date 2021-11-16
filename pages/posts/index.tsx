@@ -5,7 +5,7 @@ export default function Index(): JSX.Element {
   return (
     <>
       <Head>
-        <title>fn-reflection's posts</title>
+        <title>fn-reflection&apos;s posts</title>
       </Head>
       <section> 
         <div>

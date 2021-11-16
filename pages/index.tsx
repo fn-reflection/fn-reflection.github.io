@@ -10,12 +10,12 @@ export default function Index(): JSX.Element {
       <section> 
         <div>
           <Link href="/posts">
-            <a>fn-reflection's posts</a>
+            <a>fn-reflection&apos;s posts</a>
           </Link>
         </div>
         <div>
           <Link href="/sandboxes">
-            <a>fn-reflection's sandboxes</a>
+            <a>fn-reflection&apos;s sandboxes</a>
           </Link>
         </div>
       </section>
