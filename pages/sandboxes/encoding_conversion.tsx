@@ -1,4 +1,3 @@
-import styles from './encoding_conversion.module.scss'; 
 import { useState } from 'react';
 
 const codeTypes = ['base64', 'binary'] as const;
@@ -38,9 +37,9 @@ const ScrollBars: React.FC = () => {
     <main style={{height: '100vh', width: '100vw', padding: '1rem'}}>
       <div style={{display: 'flex', height: '5%', padding: '0.5rem', justifyContent:'center', alignItems:'center'}}>
         <span style={{paddingRight: '0.5rem'}}>encoding type: </span>
-        <select value={codeType} onChange={e=>setCodeType(e.target.value)}>
+        <select value={codeType} onChange={e=>setCodeType(e.target.value as CodeType)}>
           {codeTypes.map(c=>(
-            <option value={c} style={{padding: '0.5rem'}}>
+            <option key={c} value={c} style={{padding: '0.5rem'}}>
               {c}            
             </option>
           ))}
