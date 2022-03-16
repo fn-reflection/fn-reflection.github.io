@@ -28,7 +28,7 @@ export default function Index(): JSX.Element {
         </div>
         <div>
           <Link href="/sandboxes/encoding_conversion">
-            <a>encoding conversion</a>
+            <a>Encoding Conversion</a>
           </Link>
           <p>コード変換アプリ(データ永続化一切無し)</p>
         </div>
