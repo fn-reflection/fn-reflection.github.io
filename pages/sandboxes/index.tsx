@@ -26,6 +26,12 @@ export default function Index(): JSX.Element {
           </Link>
           <p>何かとややこしいスクロールバーのテスト</p>
         </div>
+        <div>
+          <Link href="/sandboxes/encoding_conversion">
+            <a>encoding conversion</a>
+          </Link>
+          <p>コード変換アプリ(データ永続化一切無し)</p>
+        </div>
       </section>
       <section> 
       </section>

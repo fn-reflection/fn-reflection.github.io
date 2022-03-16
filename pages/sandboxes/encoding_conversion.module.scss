@@ -1,0 +1,19 @@
+.scroll-area{
+  height: 100%;
+  width: 300px; 
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  position: relative; // for manipulate location of scroll bar thumb
+
+  -ms-overflow-style: none; // no default scrollbar on IE
+  scrollbar-width: none; // no default scrollbar on firefox
+  &::-webkit-scrollbar { display: none; } // no scrollbar on Chrome, Safari
+}
+
+.scroll-thumb{
+  position: absolute;
+  width: 0.4rem;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: .2rem;
+}
