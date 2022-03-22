@@ -32,8 +32,12 @@ export default function Index(): JSX.Element {
           </Link>
           <p>コード変換アプリ(データ永続化一切無し)</p>
         </div>
-      </section>
-      <section> 
+        <div>
+          <Link href="/sandboxes/test_matrix">
+            <a>Test Matrix</a>
+          </Link>
+          <p>行列計算</p>
+        </div>
       </section>
     </>
   );
