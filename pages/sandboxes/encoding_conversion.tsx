@@ -20,7 +20,7 @@ const decodeDispatcher: (args:Readonly<{codeType: CodeType}>)=>((data:string)=>s
   return identityString;
 };
 
-const ScrollBars: React.FC = () => {
+const EncodingConversion: React.FC = () => {
   const [decoded, setDecoded] = useState('');
   const [encoded, setEncoded] = useState('');
   const [codeType, setCodeType] = useState<CodeType>('base64');
@@ -66,5 +66,5 @@ const ScrollBars: React.FC = () => {
       </div>
     </main>
   ); };
-export default ScrollBars;
+export default EncodingConversion;
 
