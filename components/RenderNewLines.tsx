@@ -1,11 +1,4 @@
-import { FC } from 'react';
-
-type Props = {
-  rawString: string, 
-  rowClass: string
-};
-
-const RenderNewLines: FC<Props> = ({rawString, rowClass=''}) => {
+const RenderNewLines: (args:{rawString: string, rowClass?: string})=> JSX.Element = ({rawString, rowClass=''}) => {
   const stringRows = rawString.split('\n');
   return (
     <>
