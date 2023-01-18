@@ -12,6 +12,7 @@
   "dependencies": {
     "@stefanprobst/remark-shiki": "^0.1.2",
     "@types/lodash": "^4.14.177",
+    "ace-builds": "^1.14.0",
     "date-fns": "^2.23.0",
     "gray-matter": "^4.0.3",
     "lodash": "^4.17.21",
