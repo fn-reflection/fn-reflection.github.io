@@ -52,4 +52,4 @@ const withTranspileModules = require('next-transpile-modules')([
 ]);
 // 'ERR_REQUIRE_ESM'対策 nextではcommonjsでコンパイルするらしく、esmodule形式の外部ライブラリをそのまま使用できない。
 // 追いトランスパイルで動作させる
-module.exports = withTranspileModules();
+// module.exports = withTranspileModules();
