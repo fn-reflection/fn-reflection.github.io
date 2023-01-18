@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react'
+import { useState, useRef } from 'react';
 import Ace from 'ace-builds';
-import dynamic from 'next/dynamic'
-import { SUPPORTED_LANGUAGES, SupportedLanguage, OFFICIAL_NAMES } from '../../core/ace_editor/supported_languages'
+import dynamic from 'next/dynamic';
+import { SUPPORTED_LANGUAGES, SupportedLanguage, OFFICIAL_NAMES } from '../../core/ace_editor/supported_languages';
 
 
 const AceEditorNoSsr = dynamic(
@@ -9,7 +9,7 @@ const AceEditorNoSsr = dynamic(
     return (await import('../../components/ace_editor')).AceEditor;
   },
   { ssr: false }
-)
+);
 
 export default function TestAceEditor(): JSX.Element {
   const editorRef = useRef<Ace.Ace.Editor | null>(null);
@@ -33,7 +33,7 @@ export default function TestAceEditor(): JSX.Element {
       <AceEditorNoSsr {...{ editorRef, language, width: '100%', height: '300px' }} />
       <div style={{ display: 'flex', padding: '0.5rem', gap: '2rem' }}>
         <button
-          onClick={() => { setSubmitCode(editorRef.current?.session.getValue() || '') }}
+          onClick={() => { setSubmitCode(editorRef.current?.session.getValue() || ''); }}
           style={{
             padding: '0.5rem',
           }}
