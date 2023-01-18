@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-non-null-assertion */
 
 import { useEffect, useRef, MutableRefObject } from 'react';
 import Ace from 'ace-builds';
@@ -29,7 +30,7 @@ const AceEditor: (args: Props) => JSX.Element = ({
       enableAutoIndent: true,
       enableBasicAutocompletion: true,
       enableLiveAutocompletion: true,
-      fontSize: '16px',
+      fontSize: 16,
       theme: 'ace/theme/monokai',
     });
   }, []);
