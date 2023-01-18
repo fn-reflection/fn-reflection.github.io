@@ -31,6 +31,12 @@ export default function Index(): JSX.Element {
         </Link>
         <p>コード変換アプリ(データ永続化一切無し)</p>
       </div>
+      <div>
+        <Link href="/sandboxes/test_ace_editor">
+          Try Ace Editor
+        </Link>
+        <p>Ace EditorのAPI, UX検証用(React Aceは一旦なしで)</p>
+      </div>
     </section>
     <section> 
     </section>
