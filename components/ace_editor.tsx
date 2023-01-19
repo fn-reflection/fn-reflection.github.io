@@ -6,10 +6,10 @@ import { SUPPORTED_LANGUAGES, SupportedLanguage, PLACEHOLDERS } from '../core/ac
 import 'ace-builds/src-noconflict/theme-monokai';
 // enable basic and live auto completion
 import 'ace-builds/src-noconflict/ext-language_tools';
-// import each supported language style dynamically
-SUPPORTED_LANGUAGES.forEach(lang => {
-  require(`ace-builds/src-noconflict/mode-${lang}`);
-});
+// import all SUPPORTED_LANGUAGES
+import 'ace-builds/src-noconflict/mode-java';
+import 'ace-builds/src-noconflict/mode-ruby';
+import 'ace-builds/src-noconflict/mode-python';
 
 type Props = {
   editorRef: MutableRefObject<Ace.Ace.Editor | null>,

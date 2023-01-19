@@ -1,3 +1,4 @@
+// if add some language, import its code styles on components/ace_editor.tsx
 const SUPPORTED_LANGUAGES = ['java', 'python', 'ruby'] as const;
 
 type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
