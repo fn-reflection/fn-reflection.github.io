@@ -23,15 +23,15 @@ input_line = gets
 puts "XXXXXX"
 `;
 const PLACEHOLDERS: { [key in SupportedLanguage]: string } = {
-    java: PLACEHOLDER_JAVA,
-    python: PLACEHOLDER_PYTHON,
-    ruby: PLACEHOLDER_RUBY,
-}
+  java: PLACEHOLDER_JAVA,
+  python: PLACEHOLDER_PYTHON,
+  ruby: PLACEHOLDER_RUBY,
+};
 const OFFICIAL_NAMES: { [key in SupportedLanguage]: string } = {
-    java: 'Java',
-    python: 'Python',
-    ruby: 'Ruby',
-}
+  java: 'Java',
+  python: 'Python',
+  ruby: 'Ruby',
+};
 
-export { SUPPORTED_LANGUAGES, PLACEHOLDERS, OFFICIAL_NAMES }
-export type { SupportedLanguage }
+export { SUPPORTED_LANGUAGES, PLACEHOLDERS, OFFICIAL_NAMES };
+export type { SupportedLanguage };
