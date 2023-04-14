@@ -1,0 +1,7 @@
+@use '../../design_schemes/test/test-unused.scss';
+
+.heading {
+  height: 100%;
+  color: test-unused.$color-a;
+  font-size: test-unused.$heading-font-size;
+}

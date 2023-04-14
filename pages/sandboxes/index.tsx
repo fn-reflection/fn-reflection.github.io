@@ -6,7 +6,7 @@ export default function Index(): JSX.Element {
     <Head>
       <title>fn-reflection&apos;s sandboxes</title>
     </Head>
-    <section> 
+    <section>
       <div>
         <Link href="/">
           ..
@@ -37,8 +37,14 @@ export default function Index(): JSX.Element {
         </Link>
         <p>Ace EditorのAPI, UX検証用(React Aceは一旦なしで)</p>
       </div>
+      <div>
+        <Link href="/sandboxes/test_use_scss">
+          Check SCSS Use Output
+        </Link>
+        <p>SCSSでuseを使った場合コンパイル結果に使われていない変数が現れるか？</p>
+      </div>
     </section>
-    <section> 
+    <section>
     </section>
   </>;
 }
