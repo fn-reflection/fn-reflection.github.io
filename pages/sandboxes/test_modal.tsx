@@ -14,11 +14,14 @@ const ModalNoSsr = dynamic(
 );
 
 const TestModal = (): JSX.Element => {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   return (
     <div>
-      {showModal && <ModalNoSsr {...{ modalContent:<LongContent />, closeModal: () => { setShowModal(false); } }} />}
-      <LongContent />
+      {showModal && <ModalNoSsr {...{ modalContent: <LongContent />, closeModal: () => { setShowModal(false); } }} />}
+      <div style={{display: 'flex'}}>
+        <LongContent />
+        <button onClick={()=>setShowModal(true)}>Modal生成</button>
+      </div>
     </div>
   ); };
 export default TestModal;
