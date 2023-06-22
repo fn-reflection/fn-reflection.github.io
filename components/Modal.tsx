@@ -1,31 +1,6 @@
 import { useEffect } from 'react';
 import styles from './Modal.module.scss';
 
-// https://github.com/ics-creative/220620_fixed_scrolling/blob/main/src/demo02/logics/scrollLock.ts
-function scrollLock(event: TouchEvent) {
-  const elementInModal = (event.target as HTMLDivElement)?.closest(`.${styles.modal}`);
-  if (elementInModal === null) { // モーダル外の要素
-    event.preventDefault(); // スクロールを防ぐ
-  } else {
-    if (elementInModal.clientHeight < elementInModal.scrollHeight) {
-      event.stopPropagation(); // スクロール可能、バブリングを防ぐ
-    } else {
-      event.preventDefault(); // スクロール不要、スクロール処理を防ぐ
-    }
-  }
-}
-
-// スクロール範囲を1px内側に制限し、追加スクロールバグを抑止する(for iOS Safari)
-// https://github.com/ics-creative/220620_fixed_scrolling/blob/main/src/demo02/logics/scrollLockFix.ts
-function limitScrollRange(modal: HTMLDivElement) {
-  if (modal.scrollTop + modal.clientHeight === modal.scrollHeight) {
-    modal.scrollTop = modal.scrollTop - 1;
-  }
-  if (modal.scrollTop === 0) {
-    modal.scrollTop = 1;
-  }
-}
-
 type Props = {
   modalContent: JSX.Element,
   closeModal: () => void
@@ -33,9 +8,14 @@ type Props = {
 
 export const Modal = ({ modalContent, closeModal }:Props): JSX.Element => {
   useEffect(() => {
-    const initBodyOverflowY = document.body.style.overflowY;
-    document.body.style.overflowY = 'hidden';
-    return () => { document.body.style.overflowY = initBodyOverflowY; };
+    const prevScrollTop = window.scrollY;
+    document.body.style.top = `-${prevScrollTop}px`; // for Safari
+    document.body.classList.add(styles['scroll-lock']);
+    return () => {
+      document.body.classList.remove(styles['scroll-lock']);
+      document.body.style.top = '';
+      window.scrollTo({top: prevScrollTop });
+    };
   }, []);
   return (
     <div className={styles.modal}>

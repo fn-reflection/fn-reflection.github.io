@@ -54,3 +54,8 @@ $size-sp-max: 767px;
     max-height: calc(100vh - 15rem);
     overflow: auto;
 }
+
+.scroll-lock {
+    overflow-y: hidden;
+    position: fixed; // for Safari
+}
