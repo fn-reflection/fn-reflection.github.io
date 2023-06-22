@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import styles from './Modal.module.scss';
+import {enableBodyScroll, disableBodyScroll} from 'body-scroll-lock';
 
 type Props = {
   modalContent: JSX.Element,
@@ -8,14 +9,8 @@ type Props = {
 
 export const Modal = ({ modalContent, closeModal }:Props): JSX.Element => {
   useEffect(() => {
-    const prevScrollTop = window.scrollY;
-    document.body.style.top = `-${prevScrollTop}px`; // for Safari
-    document.body.classList.add(styles['scroll-lock']);
-    return () => {
-      document.body.classList.remove(styles['scroll-lock']);
-      document.body.style.top = '';
-      window.scrollTo({top: prevScrollTop });
-    };
+    disableBodyScroll(document.getElementsByClassName(styles.modal));
+    return () => { enableBodyScroll(document.getElementsByClassName(styles.modal)); };
   }, []);
   return (
     <div className={styles.modal}>
