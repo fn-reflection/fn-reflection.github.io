@@ -6,7 +6,7 @@ import { SUPPORTED_LANGUAGES, SupportedLanguage, OFFICIAL_NAMES } from '../../co
 
 const AceEditorNoSsr = dynamic(
   async () => {
-    return (await import('../../components/ace_editor')).AceEditor;
+    return (await import('../../components/AceEditor')).AceEditor;
   },
   { ssr: false }
 );
@@ -46,4 +46,3 @@ export default function TestAceEditor(): JSX.Element {
     </article>
   );
 }
-
