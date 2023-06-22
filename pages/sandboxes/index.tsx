@@ -43,6 +43,12 @@ export default function Index(): JSX.Element {
         </Link>
         <p>SCSSでuseを使った場合コンパイル結果に使われていない変数が現れるか？</p>
       </div>
+      <div>
+        <Link href="/sandboxes/test_modal">
+          Test Modal
+        </Link>
+        <p>Modal実装テスト(スクロール挙動など)</p>
+      </div>
     </section>
     <section>
     </section>
