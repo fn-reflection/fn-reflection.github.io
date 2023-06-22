@@ -2,8 +2,7 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 
 const LongContent = () => (
-  <div style={{ width: '10rem', height: '100rem', border: '0.25rem solid black', backgroundColor: '#def'}} >
-  </div>
+  <div style={{ width: '20rem', height: '100rem', border: '0.25rem solid black', backgroundColor: '#def'}} />
 );
 
 const ModalNoSsr = dynamic(
