@@ -24,7 +24,6 @@ function limitScrollRange(modal: HTMLDivElement) {
   if (modal.scrollTop === 0) {
     modal.scrollTop = 1;
   }
-  console.log(modal);
 }
 
 type Props = {
