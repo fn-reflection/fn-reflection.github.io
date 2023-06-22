@@ -33,23 +33,9 @@ type Props = {
 
 export const Modal = ({ modalContent, closeModal }:Props): JSX.Element => {
   useEffect(() => {
-    function limitScrollRangeOfModal() {
-      const modal = document.querySelector<HTMLDivElement>(`.${styles.modal}`);
-      if (modal === null) return;
-      limitScrollRange(modal);
-    }
-
-    const modal = document.querySelector<HTMLDivElement>(`.${styles.modal}`);
-    if (modal === null) return;
-    // document.body.style.overflowY = 'hidden'; // for PC
-    modal?.addEventListener('scroll', limitScrollRangeOfModal); // for iOS Safari
-    document.addEventListener('touchmove', scrollLock, { passive: false }); // for iOS Safari
-
-    return () => {
-      // document.body.style.overflowY = 'auto'; // for PC
-      modal?.removeEventListener('scroll', limitScrollRangeOfModal); // for iOS Safari
-      document.removeEventListener('touchmove', scrollLock); // for iOS Safari
-    };
+    const initBodyOverflowY = document.body.style.overflowY;
+    document.body.style.overflowY = 'hidden';
+    return () => { document.body.style.overflowY = initBodyOverflowY; };
   }, []);
   return (
     <div className={styles.modal}>
