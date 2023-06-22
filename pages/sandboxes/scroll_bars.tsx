@@ -1,10 +1,10 @@
-import styles from './scroll_bars.module.scss'; 
+import styles from './scroll_bars.module.scss';
 import throttle from 'lodash/throttle';
 import { useState } from 'react';
 
-const FakeContent: React.FC<{prefix: string}> = (props) => (
+const FakeContent = ({prefix}: {prefix: string})=> (
   <div style={{backgroundColor: '#def'}} >
-    {`${props.prefix}: ${Array.from({length: 1000}, (_v, k) => k).map(n=>n.toString()).join()}`}
+    {`${prefix}: ${Array.from({length: 1000}, (_v, k) => k).map(n=>n.toString()).join()}`}
   </div>
 );
 
@@ -18,8 +18,7 @@ const calcThumbStyle =(target: HTMLDivElement): ScrollThumbStyle=>{
   return {top:`${target.scrollTop*(1+ratio)}px`, height: `${target.offsetHeight*ratio}px` };
 };
 
-
-const ScrollBars: React.FC = () => {
+const ScrollBars = () : JSX.Element => {
   const [scrollThumbStyle, setScrollThumbStyle] = useState({top:'0', height:'0'});
   const throttledSetScrollThumbStyle = throttle(setScrollThumbStyle, 100);
   return (

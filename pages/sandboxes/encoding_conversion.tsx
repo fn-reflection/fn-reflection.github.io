@@ -20,17 +20,17 @@ const decodeDispatcher: (args:Readonly<{codeType: CodeType}>)=>((data:string)=>s
   return identityString;
 };
 
-const ScrollBars: React.FC = () => {
+const EncodingConversion = (): JSX.Element => {
   const [decoded, setDecoded] = useState('');
   const [encoded, setEncoded] = useState('');
   const [codeType, setCodeType] = useState<CodeType>('base64');
   const onEncode=()=>{
     const encoder = encodeDispatcher({codeType});
-    setEncoded(encoder(decoded));    
+    setEncoded(encoder(decoded));
   };
   const onDecode = ()=>{
     const decoder = decodeDispatcher({codeType});
-    setDecoded(decoder(encoded));    
+    setDecoded(decoder(encoded));
   };
 
   return (
@@ -40,7 +40,7 @@ const ScrollBars: React.FC = () => {
         <select value={codeType} onChange={e=>setCodeType(e.target.value as CodeType)}>
           {codeTypes.map(c=>(
             <option key={c} value={c} style={{padding: '0.5rem'}}>
-              {c}            
+              {c}
             </option>
           ))}
         </select>
@@ -66,5 +66,4 @@ const ScrollBars: React.FC = () => {
       </div>
     </main>
   ); };
-export default ScrollBars;
-
+export default EncodingConversion;
