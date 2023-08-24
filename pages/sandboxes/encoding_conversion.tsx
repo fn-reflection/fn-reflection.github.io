@@ -4,18 +4,18 @@ const codeTypes = ['base64', 'binary'] as const;
 type CodeType = typeof codeTypes[number];
 
 const identityString = (s: string)=>s;
-const encodeDispatcher: (args:Readonly<{codeType: CodeType}>)=>((data:string)=>string) = ({codeType}) =>{
+const encodeDispatcher: (args:Readonly<{codeType: CodeType}>)=>((str:string)=>string) = ({codeType}) =>{
   switch(codeType){
     case 'base64':
-      return btoa;
+      return (str) => Buffer.from(str, 'utf8').toString('base64');
   }
   return identityString;
 };
 
-const decodeDispatcher: (args:Readonly<{codeType: CodeType}>)=>((data:string)=>string) = ({codeType}) =>{
+const decodeDispatcher: (args:Readonly<{codeType: CodeType}>)=>((base64Str:string)=>string) = ({codeType}) =>{
   switch(codeType){
     case 'base64':
-      return atob;
+      return (base64Str)=> (new TextDecoder()).decode(Buffer.from(base64Str, 'base64'));
   }
   return identityString;
 };
@@ -47,19 +47,19 @@ const EncodingConversion = (): JSX.Element => {
       </div>
       <div style={{height: '95%', display: 'flex'}}>
         <div style={{height: '100%',  flexShrink: 0}}>
-          <div style={{textAlign: 'center'}}>decoded</div>
-          <div style={{height: '100%',  overflowY: 'hidden'}}>
-            <textarea value={decoded} onChange={e=>setDecoded(e.target.value)} style={{height: '100%', width: '40vw', overflowY: 'scroll',  overscrollBehavior: 'contain', fontSize: '1rem'}} />
-          </div>
-        </div>
-        <div style={{display: 'flex', width: '20vw', paddingLeft: '1rem', paddingRight: '1rem', flexDirection: 'column', justifyContent: 'center'}}>
-          <button style={{marginBottom: '1rem'}} onClick={onEncode}>encode →</button>
-          <button onClick={onDecode}>← decode</button>
-        </div>
-        <div style={{height: '100%',  flexShrink: 0}}>
           <div style={{textAlign: 'center'}}>encoded</div>
           <div style={{height: '100%', overflowY: 'hidden'}}>
             <textarea value={encoded} onChange={e=>setEncoded(e.target.value)} style={{height: '100%', width: '40vw', overflowY: 'scroll',  overscrollBehavior: 'contain', fontSize: '1rem'}} / >
+          </div>
+        </div>
+        <div style={{display: 'flex', width: '20vw', paddingLeft: '1rem', paddingRight: '1rem', flexDirection: 'column', justifyContent: 'center', gap: '1rem'}}>
+          <button onClick={onDecode}>decode →</button>
+          <button style={{marginBottom: '1rem'}} onClick={onEncode}>← encode</button>
+        </div>
+        <div style={{height: '100%',  flexShrink: 0}}>
+          <div style={{textAlign: 'center'}}>decoded</div>
+          <div style={{height: '100%',  overflowY: 'hidden'}}>
+            <textarea value={decoded} onChange={e=>setDecoded(e.target.value)} style={{height: '100%', width: '40vw', overflowY: 'scroll',  overscrollBehavior: 'contain', fontSize: '1rem'}} />
           </div>
         </div>
 
