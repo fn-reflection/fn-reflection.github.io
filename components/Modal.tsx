@@ -9,8 +9,8 @@ type Props = {
 
 export const Modal = ({ modalContent, closeModal }:Props): JSX.Element => {
   useEffect(() => {
-    disableBodyScroll(document.getElementsByClassName(styles.modal));
-    return () => { enableBodyScroll(document.getElementsByClassName(styles.modal)); };
+    disableBodyScroll(document.getElementsByClassName(styles.modal)[0]);
+    return () => { enableBodyScroll(document.getElementsByClassName(styles.modal)[0]); };
   }, []);
   return (
     <div className={styles.modal}>
