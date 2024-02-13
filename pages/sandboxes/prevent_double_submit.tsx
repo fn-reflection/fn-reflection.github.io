@@ -50,14 +50,14 @@ const PreventDoubleSubmitButton = ({ content, onClick }: {
 
 
 // 二重送信防止処理を抽出したフック
-const useTransaction = <T extends (...args: any[]) => any>(f: T): [boolean, (...args: Parameters<T>)=> Promise<void>] => {
+const useTransaction = <T extends (...args: any[]) => any>(f: T): [(...args: Parameters<T>)=> Promise<void>, boolean] => {
   const [submitting, setSubmitting] = useState(false);
   const wrapped = async (...args: Parameters<T>) => {
     setSubmitting(true);
-    f(...args);
+    await f(...args);
     setSubmitting(false);
   };
-  return [submitting, wrapped];
+  return [wrapped, submitting];
 };
 
 
@@ -69,7 +69,7 @@ const useAutoDisabled = <T extends (...args: any[]) => any>(buttonRef: RefObject
   }, [submitting]);
   const wrapped = async (...args: Parameters<T>) => {
     setSubmitting(true);
-    f(...args);
+    await f(...args);
     setSubmitting(false);
   };
   return wrapped;
@@ -81,7 +81,7 @@ const useAutoDisabled = <T extends (...args: any[]) => any>(buttonRef: RefObject
 const PreventDoubleSubmit = (): JSX.Element => {
   const button1Ref = useRef<HTMLButtonElement>(null);
   const [button2IsSubmitting, setButton2IsSubmitting] = useState(false);
-  const [submitting, onSubmit] = useTransaction(async (ev) => {
+  const [onSubmit, submitting] = useTransaction(async (ev) => {
     const res = await toResult(fetch, 'https://example.com', { mode: 'no-cors' });
     if (res.err) { console.error(res.val.message); }
     console.log(res.val);
