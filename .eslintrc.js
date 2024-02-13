@@ -26,8 +26,8 @@ module.exports = {
     indent: 'off', // https://github.com/eslint/eslint/issues/13956
     '@typescript-eslint/indent': ['error', 2],
     'linebreak-style': ['error', 'unix'],
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
     'comma-spacing': ['error', { 'before': false, 'after': true }],

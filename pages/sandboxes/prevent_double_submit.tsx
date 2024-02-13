@@ -48,6 +48,8 @@ const PreventDoubleSubmitButton = ({ content, onClick }: {
   </button>;
 };
 
+// テスト用にconsoel.logを使っているため許可する
+/* eslint-disable no-console */
 const TestModal = (): JSX.Element => {
   const button1Ref = useRef<HTMLButtonElement>(null);
   const [button2IsSubmitting, setButton2IsSubmitting] = useState(false);
@@ -59,7 +61,7 @@ const TestModal = (): JSX.Element => {
           try {
             const res = await fetch('https://example.com', { mode: 'no-cors' });
             console.log(res);
-          } catch(e) {
+          } catch (e) {
             console.log((e as Error).message);
           } finally {
             button1Ref.current!.disabled = false;
