@@ -49,6 +49,12 @@ export default function Index(): JSX.Element {
         </Link>
         <p>Modal実装テスト(スクロール挙動など)</p>
       </div>
+      <div>
+        <Link href="/sandboxes/prevent_double_submit">
+          Prevent Double Submit
+        </Link>
+        <p>二重サブミットを防ぐやつ</p>
+      </div>
     </section>
     <section>
     </section>
