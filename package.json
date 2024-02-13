@@ -7,7 +7,7 @@
     "start": "next start -p 3004",
     "lint": "eslint .",
     "lint:css": "stylelint **/*.{css,scss,sass}",
-    "export": "next export"
+    "export": "next build"
   },
   "dependencies": {
     "@stefanprobst/remark-shiki": "^0.1.2",

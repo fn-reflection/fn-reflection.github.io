@@ -50,6 +50,7 @@ const PreventDoubleSubmitButton = ({ content, onClick }: {
 
 
 // 二重送信防止処理を抽出したフック
+// fが例外を送出する場合、再送できなくなるので必ずcatchして処理するか、再送できないことをよしとする
 const useTransaction = <T extends (...args: any[]) => any>(f: T): [(...args: Parameters<T>)=> Promise<void>, boolean] => {
   const [submitting, setSubmitting] = useState(false);
   const wrapped = async (...args: Parameters<T>) => {
