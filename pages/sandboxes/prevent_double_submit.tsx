@@ -1,4 +1,4 @@
-import { useRef, useState, MouseEvent } from 'react';
+import { useRef, useState, MouseEvent, RefObject, useEffect } from 'react';
 import { Result, Ok, Err } from 'ts-results';
 
 // 例外を発生させないためのResultベースの関数(微妙かもしれない)
@@ -48,11 +48,53 @@ const PreventDoubleSubmitButton = ({ content, onClick }: {
   </button>;
 };
 
+
+// 二重送信防止処理を抽出したフック
+const useTransaction = <T extends (...args: any[]) => any>(f: T): [boolean, (...args: Parameters<T>)=> Promise<void>] => {
+  const [submitting, setSubmitting] = useState(false);
+  const wrapped = async (...args: Parameters<T>) => {
+    setSubmitting(true);
+    f(...args);
+    setSubmitting(false);
+  };
+  return [submitting, wrapped];
+};
+
+
+// 二重送信防止処理を抽出したフック2
+const useAutoDisabled = <T extends (...args: any[]) => any>(buttonRef: RefObject<HTMLButtonElement>, f: T):  (...args: Parameters<T>)=> Promise<void> => {
+  const [submitting, setSubmitting] = useState(false);
+  useEffect(() => {
+    buttonRef.current!.disabled = submitting;
+  }, [submitting]);
+  const wrapped = async (...args: Parameters<T>) => {
+    setSubmitting(true);
+    f(...args);
+    setSubmitting(false);
+  };
+  return wrapped;
+};
+
+
 // テスト用にconsoel.logを使っているため許可する
 /* eslint-disable no-console */
-const TestModal = (): JSX.Element => {
+const PreventDoubleSubmit = (): JSX.Element => {
   const button1Ref = useRef<HTMLButtonElement>(null);
   const [button2IsSubmitting, setButton2IsSubmitting] = useState(false);
+  const [submitting, onSubmit] = useTransaction(async (ev) => {
+    const res = await toResult(fetch, 'https://example.com', { mode: 'no-cors' });
+    if (res.err) { console.error(res.val.message); }
+    console.log(res.val);
+    console.log(ev);
+  });
+
+  const button2Ref = useRef<HTMLButtonElement>(null);
+  const onSubmit2 = useAutoDisabled(button2Ref, async (ev) => {
+    const res = await toResult(fetch, 'https://example.com', { mode: 'no-cors' });
+    if (res.err) { console.error(res.val.message); }
+    console.log(res.val);
+    console.log(ev);
+  });
   return (
     <div>
       <button ref={button1Ref} {...{
@@ -106,6 +148,18 @@ const TestModal = (): JSX.Element => {
           console.log(res.val);
         },
       }} />
+      <button {...{
+        disabled: submitting,
+        onClick: (ev)=> onSubmit(ev)
+      }}>
+        custom hook with useState(not work)
+      </button>
+
+      <button ref={button2Ref} {...{
+        onClick: (ev)=> onSubmit2(ev)
+      }}>
+        custom hook with useRef(not work)
+      </button>
     </div>
   ); };
-export default TestModal;
+export default PreventDoubleSubmit;
