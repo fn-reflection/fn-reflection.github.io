@@ -153,13 +153,13 @@ const PreventDoubleSubmit = (): JSX.Element => {
         disabled: submitting,
         onClick: (ev)=> onSubmit(ev)
       }}>
-        custom hook with useState(not work)
+        custom hook with useState
       </button>
 
       <button ref={button2Ref} {...{
         onClick: (ev)=> onSubmit2(ev)
       }}>
-        custom hook with useRef(not work)
+        custom hook with useRef
       </button>
     </div>
   ); };
