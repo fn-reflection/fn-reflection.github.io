@@ -17,7 +17,7 @@
     "date-fns": "^2.23.0",
     "gray-matter": "^4.0.3",
     "lodash": "^4.17.21",
-    "next": "^13.1.2",
+    "next": "^14.1.0",
     "prismjs": "^1.24.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -41,7 +41,7 @@
   "devDependencies": {
     "@babel/runtime": "^7.14.8",
     "@types/body-scroll-lock": "^3.1.0",
-    "@types/node": "^16.4.13",
+    "@types/node": "^20.6.1",
     "@types/react": "^17.0.16",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
