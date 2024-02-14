@@ -53,7 +53,7 @@ const PreventDoubleSubmitButton = ({ content, onClick }: {
   </button>;
 };
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms:number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // 二重送信防止処理を抽出したフック
 // fが例外を送出する場合、再送できなくなるので必ずcatchして処理するか、再送できないことをよしとする
