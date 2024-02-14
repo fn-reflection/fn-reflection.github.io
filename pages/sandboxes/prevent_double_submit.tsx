@@ -1,6 +1,9 @@
 import { useRef, useState, MouseEvent, RefObject, useEffect } from 'react';
 import { Result, Ok, Err } from 'ts-results';
 
+// テスト用にconsole.logを使っているため許可する
+/* eslint-disable no-console */
+
 // 例外を発生させないためのResultベースの関数(微妙かもしれない)
 const toResult = async <T extends (...args: any[]) => any>(f: T, ...args: Parameters<T>): Promise<Result<Awaited<ReturnType<T>>, Error>> => {
   try {
@@ -83,8 +86,6 @@ const useAutoDisabled = <T extends (...args: any[]) => any>(buttonRef: RefObject
 };
 
 
-// テスト用にconsole.logを使っているため許可する
-/* eslint-disable no-console */
 const PreventDoubleSubmit = (): JSX.Element => {
   const button1Ref = useRef<HTMLButtonElement>(null);
   const [button2IsSubmitting, setButton2IsSubmitting] = useState(false);
@@ -166,7 +167,7 @@ const PreventDoubleSubmit = (): JSX.Element => {
       <button {...{
         onClick: (ev)=> onSubmit(ev)
       }}>
-        custom hook with useState(always not disabled)
+        custom hook with useState(always clickable)
       </button>
 
       <button ref={button2Ref} {...{
