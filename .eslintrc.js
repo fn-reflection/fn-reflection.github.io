@@ -28,7 +28,7 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-    quotes: ['error', 'single'],
+    quotes: ['error', 'single', { 'avoidEscape': true }],
     semi: ['error', 'always'],
     'comma-spacing': ['error', { 'before': false, 'after': true }],
     'react/react-in-jsx-scope': 'off', // can ignore from react version 17

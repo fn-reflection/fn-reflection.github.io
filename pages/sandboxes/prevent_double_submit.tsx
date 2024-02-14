@@ -16,6 +16,7 @@ const ComplexPreventDoubleSubmitButton = ({ content, onClickHandler, onClickErro
   return <button {...{
     disabled: submitting,
     onClick: async (ev) => {
+      if (submitting) { return; }
       setSubmitting(true);
       try {
         await onClickHandler(ev);
@@ -39,6 +40,7 @@ const PreventDoubleSubmitButton = ({ content, onClick }: {
   return <button {...{
     disabled: submitting,
     onClick: async (ev) => {
+      if (submitting) { return; }
       setSubmitting(true);
       await onClick(ev);
       setSubmitting(false);
@@ -48,13 +50,16 @@ const PreventDoubleSubmitButton = ({ content, onClick }: {
   </button>;
 };
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // 二重送信防止処理を抽出したフック
 // fが例外を送出する場合、再送できなくなるので必ずcatchして処理するか、再送できないことをよしとする
 const useTransaction = <T extends (...args: any[]) => any>(f: T): [(...args: Parameters<T>)=> Promise<void>, boolean] => {
   const [submitting, setSubmitting] = useState(false);
   const wrapped = async (...args: Parameters<T>) => {
+    if (submitting) { console.log("don't start to fetch"); return; }
     setSubmitting(true);
+    await sleep(1000);
     await f(...args);
     setSubmitting(false);
   };
@@ -69,6 +74,7 @@ const useAutoDisabled = <T extends (...args: any[]) => any>(buttonRef: RefObject
     buttonRef.current!.disabled = submitting;
   }, [submitting]);
   const wrapped = async (...args: Parameters<T>) => {
+    if (submitting) { return; }
     setSubmitting(true);
     await f(...args);
     setSubmitting(false);
@@ -77,7 +83,7 @@ const useAutoDisabled = <T extends (...args: any[]) => any>(buttonRef: RefObject
 };
 
 
-// テスト用にconsoel.logを使っているため許可する
+// テスト用にconsole.logを使っているため許可する
 /* eslint-disable no-console */
 const PreventDoubleSubmit = (): JSX.Element => {
   const button1Ref = useRef<HTMLButtonElement>(null);
@@ -116,6 +122,7 @@ const PreventDoubleSubmit = (): JSX.Element => {
       <button {...{
         disabled: button2IsSubmitting,
         onClick: async (_ev) => {
+          if (button2IsSubmitting) { return; }
           setButton2IsSubmitting(true);
           try {
             const res = await fetch('https://example.com', { mode: 'no-cors' });
@@ -154,6 +161,12 @@ const PreventDoubleSubmit = (): JSX.Element => {
         onClick: (ev)=> onSubmit(ev)
       }}>
         custom hook with useState
+      </button>
+
+      <button {...{
+        onClick: (ev)=> onSubmit(ev)
+      }}>
+        custom hook with useState(always not disabled)
       </button>
 
       <button ref={button2Ref} {...{
