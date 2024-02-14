@@ -62,7 +62,6 @@ const useConcurrencyPrevention = <T extends (...args: any[]) => any>(f: T): [(..
   const wrapped = async (...args: Parameters<T>) => {
     if (submitting) { console.log("don't start to fetch"); return; }
     setSubmitting(true);
-    await sleep(1000);
     await f(...args);
     setSubmitting(false);
   };
@@ -91,6 +90,7 @@ const PreventDoubleSubmit = (): JSX.Element => {
   const [button2IsSubmitting, setButton2IsSubmitting] = useState(false);
   const [onSubmit, submitting] = useConcurrencyPrevention(async (ev) => {
     const res = await toResult(fetch, 'https://example.com', { mode: 'no-cors' });
+    await sleep(1000); // fetchが抑制されてるかをわかりやすくするためのsleep
     if (res.err) { console.error(res.val.message); }
     console.log(res.val);
     console.log(ev);
