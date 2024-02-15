@@ -84,6 +84,32 @@ const useAutoDisabled = <T extends (...args: any[]) => any>(buttonRef: RefObject
   return wrapped;
 };
 
+// レートリミットを付加する
+// fが例外を送出する場合、再送できなくなるので必ずcatchして処理するか、再送できないことをよしとする
+const rateLimited = <T extends (...args: any[]) => any>({f, limit=1}: {f: T, limit?: number}) : (...args: Parameters<T>) => Promise<ReturnType<T>> => {
+  let count = 0;
+  const limited = async (...args: Parameters<T>) => {
+    if (limit<=count) { console.log('rate limited'); return; }
+    count += 1;
+    const ret = await f(...args);
+    count -= 1;
+    return ret;
+  };
+  return limited;
+};
+
+
+const useRatelimited = <T extends (...args: any[]) => any>({ f, limit=1 }: { f: T, limit?: number }): [(...args: Parameters<T>) => Promise<ReturnType<T>>, number] => {
+  const [count, setCount] = useState(0);
+  const limited = async (...args: Parameters<T>) => {
+    if (limit<=count) { console.log('rate limited'); return; }
+    setCount(prev=>prev+1);
+    const res = await f(...args);
+    setCount(prev=>prev-1);
+    return res;
+  };
+  return [limited, count];
+};
 
 const PreventDoubleSubmit = (): JSX.Element => {
   const button1Ref = useRef<HTMLButtonElement>(null);
@@ -102,6 +128,16 @@ const PreventDoubleSubmit = (): JSX.Element => {
     if (res.err) { console.error(res.val.message); }
     console.log(res.val);
     console.log(ev);
+  });
+
+  const [rateLimitedFunc, count] = useRatelimited({
+    f:async (ev) => {
+      const res = await toResult(fetch, 'https://example.com', { mode: 'no-cors' });
+      await sleep(1000); // fetchが抑制されてるかをわかりやすくするためのsleep
+      if (res.err) { console.error(res.val.message); }
+      console.log(res.val);
+      console.log(ev);
+    }
   });
   return (
     <div>
@@ -159,21 +195,40 @@ const PreventDoubleSubmit = (): JSX.Element => {
       }} />
       <button {...{
         disabled: submitting,
-        onClick: (ev)=> onSubmit(ev)
+        onClick: async(ev)=> await onSubmit(ev)
       }}>
         custom hook with useState
       </button>
 
       <button {...{
-        onClick: (ev)=> onSubmit(ev)
+        onClick: async(ev)=> await onSubmit(ev)
       }}>
         custom hook with useState(always clickable)
       </button>
 
       <button ref={button2Ref} {...{
-        onClick: (ev)=> onSubmit2(ev)
+        onClick: async(ev)=> await onSubmit2(ev)
       }}>
         custom hook with useRef
+      </button>
+
+      <button {...{
+        onClick: async(ev) => await rateLimited({
+          f: async (ev) => {
+            const res = await toResult(fetch, 'https://example.com', { mode: 'no-cors' });
+            await sleep(1000); // fetchが抑制されてるかをわかりやすくするためのsleep
+            if (res.err) { console.error(res.val.message); }
+            console.log(res.val);
+            console.log(ev);
+          }})
+      }}>
+        independent on  react context
+      </button>
+
+      <button {...{
+        onClick: async(ev) => await rateLimitedFunc(ev)
+      }}>
+        ratelimited with react. count: {count}
       </button>
     </div>
   ); };
