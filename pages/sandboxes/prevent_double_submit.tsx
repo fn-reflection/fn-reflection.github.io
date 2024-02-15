@@ -99,13 +99,35 @@ const rateLimited = <T extends (...args: any[]) => any>({f, limit=1}: {f: T, lim
 };
 
 
-const useRatelimited = <T extends (...args: any[]) => any>({ f, limit=1 }: { f: T, limit?: number }): [(...args: Parameters<T>) => Promise<ReturnType<T>>, number] => {
+const useRatelimitedNaive = <T extends (...args: any[]) => any>({ f, limit=1 }: { f: T, limit?: number }): [(...args: Parameters<T>) => Promise<ReturnType<T>>, number] => {
   const [count, setCount] = useState(0);
   const limited = async (...args: Parameters<T>) => {
     if (limit<=count) { console.log('rate limited'); return; }
     setCount(prev=>prev+1);
     const res = await f(...args);
     setCount(prev=>prev-1);
+    return res;
+  };
+  return [limited, count];
+};
+
+// 決定版
+const useRatelimited = <T extends (...args: any[]) => any>(
+  { f, limit = 1 }: {
+    f: T, limit?: number
+  }
+): [(...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>|undefined>, number] => {
+  const [count, setCount] = useState(0);
+  const limited = async (...args: Parameters<T>) => {
+    if (limit<=count) { console.log('rate limited'); return; }
+    setCount(prev => prev + 1);
+    let res = undefined;
+    try {
+      res = await f(...args);
+    }
+    finally {
+      setCount(prev=>prev-1);
+    }
     return res;
   };
   return [limited, count];
@@ -130,14 +152,27 @@ const PreventDoubleSubmit = (): JSX.Element => {
     console.log(ev);
   });
 
-  const [rateLimitedFunc, count] = useRatelimited({
+  const [rateLimitedFunc, count] =  useRatelimited({
     f:async (ev) => {
       const res = await toResult(fetch, 'https://example.com', { mode: 'no-cors' });
       await sleep(1000); // fetchが抑制されてるかをわかりやすくするためのsleep
       if (res.err) { console.error(res.val.message); }
       console.log(res.val);
       console.log(ev);
+      await fetch('https://example.co', { mode: 'no-cors' }); // エラーを出してみる
     }
+  });
+
+  const [rateLimitedFunc2, count2] =  useRatelimited({
+    f:async (ev) => {
+      const res = await fetch('https://example.com', { mode: 'no-cors' });
+      await sleep(1000); // fetchが抑制されてるかをわかりやすくするためのsleep
+      if (res.err) { console.error(res.val.message); }
+      console.log(res.val);
+      console.log(ev);
+      await fetch('https://example.co', { mode: 'no-cors' }); // エラーを出してみる
+    },
+    limit: 2
   });
   return (
     <div>
@@ -228,7 +263,13 @@ const PreventDoubleSubmit = (): JSX.Element => {
       <button {...{
         onClick: async(ev) => await rateLimitedFunc(ev)
       }}>
-        ratelimited with react. count: {count}
+        rate limited event. limit: 1, count: {count}
+      </button>
+
+      <button {...{
+        onClick: async(ev) => await rateLimitedFunc2(ev)
+      }}>
+        rate limited event. limit: 2, count: {count2}
       </button>
     </div>
   ); };
