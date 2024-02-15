@@ -84,22 +84,14 @@ const useAutoDisabled = <T extends (...args: any[]) => any>(buttonRef: RefObject
   return wrapped;
 };
 
-// レートリミットを付加する
-// fが例外を送出する場合、再送できなくなるので必ずcatchして処理するか、再送できないことをよしとする
-const rateLimited = <T extends (...args: any[]) => any>({f, limit=1}: {f: T, limit?: number}) : (...args: Parameters<T>) => Promise<ReturnType<T>> => {
-  let count = 0;
-  const limited = async (...args: Parameters<T>) => {
-    if (limit<=count) { console.log('rate limited'); return; }
-    count += 1;
-    const ret = await f(...args);
-    count -= 1;
-    return ret;
-  };
-  return limited;
-};
 
-
-const useRatelimitedNaive = <T extends (...args: any[]) => any>({ f, limit=1 }: { f: T, limit?: number }): [(...args: Parameters<T>) => Promise<ReturnType<T>>, number] => {
+// 例外を処理しない版、少しシンプルになるが使い勝手はよくないかも
+const useRatelimitedSimple = <T extends (...args: any[]) => any>(
+  { f, limit = 1 }: {
+    f: T,
+    limit?: number
+  }
+): [(...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>>, number] => {
   const [count, setCount] = useState(0);
   const limited = async (...args: Parameters<T>) => {
     if (limit<=count) { console.log('rate limited'); return; }
@@ -111,27 +103,61 @@ const useRatelimitedNaive = <T extends (...args: any[]) => any>({ f, limit=1 }: 
   return [limited, count];
 };
 
+
+// レートリミットを付加する(debounceなどとノリは近い)
+const rateLimited = <T extends (...args: any[]) => any>(
+  { f, limit = 1 }: {
+    f: T, // レートリミットをかけたい関数
+    limit?: number // 最大同時実行数(デフォルトは1)
+  }
+): (...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>|void> => {
+  let count = 0;
+  const limited = async (...args: Parameters<T>) => {
+    if (limit<=count) { return; } // rate limited
+    count += 1;
+    let res = undefined;
+    try {
+      res = await f(...args);
+    } finally {
+      count -= 1;
+    }
+    return res;
+  };
+  return limited;
+};
+
 // 決定版
 const useRatelimited = <T extends (...args: any[]) => any>(
   { f, limit = 1 }: {
-    f: T, limit?: number
+    f: T, // レートリミットをかけたい関数
+    limit?: number // 最大同時実行数(デフォルトは1)
   }
-): [(...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>|undefined>, number] => {
+): [(...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>|void>, number] => {
   const [count, setCount] = useState(0);
   const limited = async (...args: Parameters<T>) => {
-    if (limit<=count) { console.log('rate limited'); return; }
+    if (limit<=count) { return; }  // rate limited
     setCount(prev => prev + 1);
     let res = undefined;
     try {
       res = await f(...args);
-    }
-    finally {
+    } finally {
       setCount(prev=>prev-1);
     }
     return res;
   };
   return [limited, count];
 };
+
+// Reactの中に置くとレンダリングのたびに関数が再生成されratelimitがかからないので、Reactの外に置く
+// Reactの中に置く場合は、useRateLimitedを使う(useCallbackでもいけるとは思うが)
+const ratelimitedOnClick = rateLimited({
+  f: async (ev: MouseEvent<HTMLButtonElement>) => {
+    const res = await fetch('https://example.com', { mode: 'no-cors' });
+    await sleep(1000); // handlerがlimitされてるかをわかりやすくするためのsleep
+    console.log(res);
+    await fetch('https://example.co', { mode: 'no-cors' }); // 例外を出してみる
+  }});
+
 
 const PreventDoubleSubmit = (): JSX.Element => {
   const button1Ref = useRef<HTMLButtonElement>(null);
@@ -153,24 +179,20 @@ const PreventDoubleSubmit = (): JSX.Element => {
   });
 
   const [rateLimitedFunc, count] =  useRatelimited({
-    f:async (ev) => {
-      const res = await toResult(fetch, 'https://example.com', { mode: 'no-cors' });
-      await sleep(1000); // fetchが抑制されてるかをわかりやすくするためのsleep
-      if (res.err) { console.error(res.val.message); }
-      console.log(res.val);
-      console.log(ev);
-      await fetch('https://example.co', { mode: 'no-cors' }); // エラーを出してみる
+    f:async (ev: MouseEvent<HTMLButtonElement>) => {
+      const res = await fetch('https://example.com', { mode: 'no-cors' });
+      await sleep(1000); // handlerがlimitされてるかをわかりやすくするためのsleep
+      console.log(res);
+      await fetch('https://example.co', { mode: 'no-cors' }); // 例外を出してみる
     }
   });
 
   const [rateLimitedFunc2, count2] =  useRatelimited({
-    f:async (ev) => {
+    f:async (ev: MouseEvent<HTMLButtonElement>) => {
       const res = await fetch('https://example.com', { mode: 'no-cors' });
-      await sleep(1000); // fetchが抑制されてるかをわかりやすくするためのsleep
-      if (res.err) { console.error(res.val.message); }
-      console.log(res.val);
-      console.log(ev);
-      await fetch('https://example.co', { mode: 'no-cors' }); // エラーを出してみる
+      await sleep(1000); // handlerがlimitされてるかをわかりやすくするためのsleep
+      console.log(res);
+      await fetch('https://example.co', { mode: 'no-cors' }); // 例外を出してみる
     },
     limit: 2
   });
@@ -248,16 +270,10 @@ const PreventDoubleSubmit = (): JSX.Element => {
       </button>
 
       <button {...{
-        onClick: async(ev) => await rateLimited({
-          f: async (ev) => {
-            const res = await toResult(fetch, 'https://example.com', { mode: 'no-cors' });
-            await sleep(1000); // fetchが抑制されてるかをわかりやすくするためのsleep
-            if (res.err) { console.error(res.val.message); }
-            console.log(res.val);
-            console.log(ev);
-          }})
-      }}>
-        independent on  react context
+        onClick: async(ev)=> await ratelimitedOnClick(ev)
+      }
+      } >
+        vanilla js rate limit impl
       </button>
 
       <button {...{
