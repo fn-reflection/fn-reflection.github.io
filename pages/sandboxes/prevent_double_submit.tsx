@@ -1,4 +1,4 @@
-import { useRef, useState, MouseEvent, RefObject, useEffect } from 'react';
+import { useRef, useState, MouseEvent, RefObject, useEffect, useCallback } from 'react';
 import { Result, Ok, Err } from 'ts-results';
 
 // テスト用にconsole.logを使っているため許可する
@@ -104,11 +104,11 @@ const useRatelimitedSimple = <T extends (...args: any[]) => any>(
 };
 
 
-// レートリミットを付加する(debounceなどとノリは近い)
+// 関数にレートリミットの意味論を付加する(debounceなどとノリは近い)
 const rateLimited = <T extends (...args: any[]) => any>(
   { f, limit = 1 }: {
     f: T, // レートリミットをかけたい関数
-    limit?: number // 最大同時実行数(デフォルトは1)
+    limit?: number // 最大同時実行数(デフォルトは1、重複送信防止)
   }
 ): (...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>|void> => {
   let count = 0;
@@ -126,25 +126,29 @@ const rateLimited = <T extends (...args: any[]) => any>(
   return limited;
 };
 
-// 決定版
+// レートリミットの意味論を付加するフック
+// vanilla実装との最大の差異は、内部のcount値をReact内部で参照できること
 const useRatelimited = <T extends (...args: any[]) => any>(
   { f, limit = 1 }: {
     f: T, // レートリミットをかけたい関数
-    limit?: number // 最大同時実行数(デフォルトは1)
+    limit?: number // 最大同時実行数(デフォルトは1、重複送信防止)
   }
 ): [(...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>|void>, number] => {
   const [count, setCount] = useState(0);
-  const limited = async (...args: Parameters<T>) => {
-    if (limit<=count) { return; }  // rate limited
-    setCount(prev => prev + 1);
-    let res = undefined;
-    try {
-      res = await f(...args);
-    } finally {
-      setCount(prev=>prev-1);
-    }
-    return res;
-  };
+  const limited = useCallback(
+    async (...args: Parameters<T>) => {
+      if (limit<=count) { return; }  // rate limited
+      setCount(prev => prev + 1);
+      let res = undefined;
+      try {
+        res = await f(...args);
+      } finally {
+        setCount(prev=>prev-1);
+      }
+      return res;
+    },
+    [f, limit, count],
+  );
   return [limited, count];
 };
 
